@@ -85,28 +85,37 @@
             </div>
             <div class="about-grid">
                  <!-- SLIDESHOW FOTO OTOMATIS -->
+                  <div class="about-grid">
+                <!-- SLIDER FOTO menggantikan placeholder -->
                 <div class="about-slider">
-                    <div class="slideshow-container" id="slideshow">
-                        <!-- Gambar akan diisi via JavaScript -->
-                        <img id="slideshowImage" src="" alt="Foto SMK Pancasila">
-                        <div class="slideshow-dots" id="slideshowDots"></div>
+                    <div class="carousel" id="aboutCarousel">
+                        <div class="carousel-track" id="carouselTrack">
+                            <!-- Slide 1 -->
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop" alt="Gedung SMK Pancasila">
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&h=400&fit=crop" alt="Ruang Kelas">
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop" alt="Kegiatan Praktik">
+                            </div>
+                            <!-- Slide 4 -->
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop" alt="Lingkungan Sekolah">
+                            </div>
+                        </div>
+                        <!-- Tombol Navigasi -->
+                        <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                        <!-- Indikator Dot -->
+                        <div class="carousel-dots" id="carouselDots"></div>
                     </div>
                 </div>
-                <div class="vision-mission-cards">
-                        <div class="vm-card">
-                            <div class="vm-icon">🎯</div>
-                            <h4>Visi</h4>
-                            <p>Menjadi SMK unggulan yang menghasilkan lulusan kompeten, berkarakter, dan berdaya saing global.</p>
-                        </div>
-                        <div class="vm-card">
-                            <div class="vm-icon">🚀</div>
-                            <h4>Misi</h4>
-                            <p>Menyelenggarakan pendidikan vokasi berkualitas berbasis teknologi dan kemitraan industri.</p>
-                        </div>
-                    </div>
-                </div>
+                  </div>
             </div>
-        </div>
     </section>
 
     <!-- ==================== JURUSAN ==================== -->
@@ -492,36 +501,70 @@
         });
 
         // SLIDESHOW
-        const slideshowImages = [
-            'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop'
-        ];
-        const imgElement = document.getElementById('slideshowImage');
-        const dotsContainer = document.getElementById('slideshowDots');
-        let currentSlide = 0;
-        imgElement.src = slideshowImages[0];
-        slideshowImages.forEach((_, index) => {
-            const dot = document.createElement('span');
-            dot.classList.add('dot');
-            if (index === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => { changeSlide(index); resetTimer(); });
-            dotsContainer.appendChild(dot);
-        });
-        const dots = document.querySelectorAll('.slideshow-dots .dot');
-        function changeSlide(index) {
-            imgElement.style.opacity = '0';
-            setTimeout(() => { imgElement.src = slideshowImages[index]; imgElement.style.opacity = '1'; }, 200);
-            dots.forEach(d => d.classList.remove('active'));
-            dots[index].classList.add('active');
-            currentSlide = index;
-        }
-        function nextSlide() { changeSlide((currentSlide + 1) % slideshowImages.length); }
-        let slideInterval = setInterval(nextSlide, 3000);
-        function resetTimer() { clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 3000); }
-        document.getElementById('slideshow').addEventListener('mouseenter', () => clearInterval(slideInterval));
-        document.getElementById('slideshow').addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 3000); });
+            const track = document.getElementById('carouselTrack');
+            const slides = Array.from(track.children);
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const dotsContainer = document.getElementById('carouselDots');
+
+            let currentIndex = 0;
+
+            // Buat dot indikator
+            slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            });
+            const dots = Array.from(dotsContainer.children);
+
+            function updateSlide(index) {
+                track.style.transform = `translateX(-${index * 100}%)`;
+                dots.forEach(d => d.classList.remove('active'));
+                dots[index].classList.add('active');
+                currentIndex = index;
+            }
+
+            function goToSlide(index) {
+                updateSlide(index);
+            }
+
+            function nextSlide() {
+                const newIndex = (currentIndex + 1) % slides.length;
+                updateSlide(newIndex);
+            }
+
+            function prevSlide() {
+                const newIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateSlide(newIndex);
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Auto slide setiap 5 detik
+            let autoSlide = setInterval(nextSlide, 5000);
+
+            // Hentikan auto slide saat hover
+            const carousel = document.getElementById('aboutCarousel');
+            carousel.addEventListener('mouseenter', () => clearInterval(autoSlide));
+            carousel.addEventListener('mouseleave', () => {
+                autoSlide = setInterval(nextSlide, 5000);
+            });
+
+            // Touch swipe support
+            let touchStartX = 0;
+            track.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+            });
+            track.addEventListener('touchend', e => {
+                const diff = touchStartX - e.changedTouches[0].clientX;
+                if (diff > 40) nextSlide();
+                else if (diff < -40) prevSlide();
+            });
+
+        })();
     </script>
 </body>
 </html>
