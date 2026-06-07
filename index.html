@@ -88,9 +88,7 @@
                 <div class="about-slider">
                     <div class="slideshow-container" id="slideshow">
                         <!-- Gambar akan diisi via JavaScript -->
-                        <img id="slideshowImage" src="sekolah.jpeg" alt="Foto SMK Pancasila">
-                        <div class="slideshow-dots" id="slideshowDots"></div>
-                        <img id="slideshowImage" src="depan1.jpeg" alt="Foto SMK Pancasila">
+                        <img id="slideshowImage" src="" alt="Foto SMK Pancasila">
                         <div class="slideshow-dots" id="slideshowDots"></div>
                     </div>
                 </div>
@@ -194,7 +192,7 @@
                     <h3>📝 Formulir Pendaftaran Siswa Baru</h3>
                     <p class="form-subtitle">SMK Pancasila Manonjaya · Tahun Ajaran 2025/2026</p>
 
-                    <form id="registrationForm" method="POST" enctype="multipart/form-data">
+                    <form id="registrationForm" enctype="multipart/form-data">
                         <input type="hidden" name="access_key" value="f1313ef4-be04-4afd-8f02-1933359eeb18">
                         <input type="hidden" name="subject" value="Pendaftaran PPDB Baru - SMK Pancasila Manonjaya">
                         <input type="hidden" name="from_name" value="Formulir PPDB SMK Pancasila">
@@ -346,243 +344,177 @@
     </button>
 
     <script>
-        (function() {
-            const navbar = document.getElementById('navbar');
-            const hamburger = document.getElementById('hamburger');
-            const navLinks = document.getElementById('navLinks');
-            const scrollTopBtn = document.getElementById('scrollTopBtn');
-            const registrationForm = document.getElementById('registrationForm');
-            const submitBtn = document.getElementById('submitBtn');
-            const submitText = document.getElementById('submitText');
-            const spinner = document.getElementById('spinner');
-            const formMessage = document.getElementById('formMessage');
-            const allNavLinks = document.querySelectorAll('.nav-links a');
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const allNavLinks = document.querySelectorAll('.nav-links a');
 
-            function handleScroll() {
-                if (window.scrollY > 60) navbar.classList.add('scrolled');
-                else navbar.classList.remove('scrolled');
-                if (window.scrollY > 500) scrollTopBtn.classList.add('visible');
-                else scrollTopBtn.classList.remove('visible');
-                updateActiveNavLink();
-            }
-
-            function updateActiveNavLink() {
-                const sections = document.querySelectorAll('section[id]');
-                let current = '';
-                sections.forEach(s => {
-                    if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id');
-                });
-                allNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
-                });
-            }
-
-            window.addEventListener('scroll', handleScroll, { passive: true });
-            handleScroll();
-
-            hamburger.addEventListener('click', function() {
-                hamburger.classList.toggle('active');
-                navLinks.classList.toggle('open');
-                document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
-            });
-
+        function handleScroll() {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+            updateActiveNavLink();
+        }
+        function updateActiveNavLink() {
+            const sections = document.querySelectorAll('section[id]');
+            let current = '';
+            sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id'); });
             allNavLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('open');
-                    document.body.style.overflow = '';
-                });
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) link.classList.add('active');
             });
+        }
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
 
-            document.addEventListener('click', function(e) {
-                if (!navLinks.contains(e.target) && !hamburger.contains(e.target) && navLinks.classList.contains('open')) {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('open');
-                    document.body.style.overflow = '';
-                }
-            });
-
-            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-            function showError(fid, eid) {
-                const f = document.getElementById(fid);
-                const e = document.getElementById(eid);
-                if (f) f.classList.add('error');
-                if (e) e.classList.add('show');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('open');
+            document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+        });
+        allNavLinks.forEach(link => link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('open');
+            document.body.style.overflow = '';
+        }));
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !hamburger.contains(e.target) && navLinks.classList.contains('open')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+                document.body.style.overflow = '';
             }
-            function clearError(fid, eid) {
-                const f = document.getElementById(fid);
-                const e = document.getElementById(eid);
-                if (f) f.classList.remove('error');
-                if (e) e.classList.remove('show');
+        });
+        scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // FORM
+        const registrationForm = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const spinner = document.getElementById('spinner');
+        const formMessage = document.getElementById('formMessage');
+
+        function showError(fid, eid) {
+            const f = document.getElementById(fid), e = document.getElementById(eid);
+            if (f) f.classList.add('error');
+            if (e) e.classList.add('show');
+        }
+        function clearError(fid, eid) {
+            const f = document.getElementById(fid), e = document.getElementById(eid);
+            if (f) f.classList.remove('error');
+            if (e) e.classList.remove('show');
+        }
+        function clearAllErrors() {
+            document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            formMessage.classList.remove('success', 'error-msg-box');
+            formMessage.style.display = 'none';
+            formMessage.textContent = '';
+        }
+
+        const inputs = ['nama','asal_sekolah','alamat','nama_ortu','no_hp','email','jurusan'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => clearError(id, 'error-'+id));
+                el.addEventListener('change', () => clearError(id, 'error-'+id));
             }
-            function clearAllErrors() {
-                document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-                formMessage.classList.remove('success', 'error-msg-box');
-                formMessage.style.display = 'none';
-                formMessage.textContent = '';
+        });
+        document.querySelectorAll('input[name="jenis_kelamin"]').forEach(r => r.addEventListener('change', () => clearError(null, 'error-jk')));
+
+        registrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearAllErrors();
+            let err = false;
+            const val = id => document.getElementById(id)?.value.trim() || '';
+            const nama = val('nama');
+            const asal = val('asal_sekolah'), alamat = val('alamat');
+            const ortu = val('nama_ortu'), hp = val('no_hp'), email = val('email');
+            const jurusan = document.getElementById('jurusan').value;
+            const jk = document.querySelector('input[name="jenis_kelamin"]:checked');
+
+            if (!nama) { showError('nama','error-nama'); err=true; }           
+            if (!asal) { showError('asal_sekolah','error-asal'); err=true; }
+            if (!alamat) { showError('alamat','error-alamat'); err=true; }
+            if (!ortu) { showError('nama_ortu','error-ortu'); err=true; }
+            if (!hp || hp.length<10) { showError('no_hp','error-hp'); err=true; }
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email','error-email'); err=true; }
+            if (!jurusan) { showError('jurusan','error-jurusan'); err=true; }
+            if (!jk) { showError(null,'error-jk'); err=true; }
+            if (err) {
+                const firstErr = document.querySelector('.error');
+                if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
+                return;
             }
 
-            const inputs = [
-                'nama','nisn','tanggal_lahir','tempat_lahir','asal_sekolah','alamat','nama_ortu','no_hp','email','jurusan','foto','dokumen'
-            ];
-            inputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('input', () => clearError(id, 'error-'+id));
-                    el.addEventListener('change', () => clearError(id, 'error-'+id));
-                }
-            });
-            document.querySelectorAll('input[name="jenis_kelamin"]').forEach(r => {
-                r.addEventListener('change', () => clearError(null, 'error-jk'));
-            });
+            const accessKey = document.querySelector('input[name="access_key"]').value.trim();
+            if (accessKey === 'f1313ef4-be04-4afd-8f02-1933359eeb18' || accessKey === '') {
+                formMessage.classList.add('error-msg-box');
+                formMessage.style.display = 'block';
+                formMessage.innerHTML = '⚠️ <strong>Access Key belum diganti!</strong><br><small>Ganti dengan Access Key dari <a href="https://web3forms.com/" target="_blank">web3forms.com</a>.</small>';
+                formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
+                return;
+            }
 
-            document.getElementById('foto').addEventListener('change', function() {
-                if (this.files[0] && this.files[0].size > 2*1024*1024) {
-                    showError('foto', 'error-foto'); this.value = '';
-                } else clearError('foto', 'error-foto');
-            });
-            document.getElementById('dokumen').addEventListener('change', function() {
-                if (this.files[0] && this.files[0].size > 3*1024*1024) {
-                    showError('dokumen', 'error-dokumen'); this.value = '';
-                } else clearError('dokumen', 'error-dokumen');
-            });
-
-            registrationForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                clearAllErrors();
-                let err = false;
-                const val = id => document.getElementById(id)?.value.trim() || '';
-                const nama = val('nama'), nisn = val('nisn'), tgl = val('tanggal_lahir');
-                const tempat = val('tempat_lahir'), asal = val('asal_sekolah'), alamat = val('alamat');
-                const ortu = val('nama_ortu'), hp = val('no_hp'), email = val('email');
-                const jurusan = document.getElementById('jurusan').value;
-                const jk = document.querySelector('input[name="jenis_kelamin"]:checked');
-
-                if (!nama) { showError('nama','error-nama'); err=true; }
-                if (!nisn || nisn.length<10) { showError('nisn','error-nisn'); err=true; }
-                if (!tgl) { showError('tanggal_lahir','error-tgl'); err=true; }
-                if (!tempat) { showError('tempat_lahir','error-tempat'); err=true; }
-                if (!asal) { showError('asal_sekolah','error-asal'); err=true; }
-                if (!alamat) { showError('alamat','error-alamat'); err=true; }
-                if (!ortu) { showError('nama_ortu','error-ortu'); err=true; }
-                if (!hp || hp.length<10) { showError('no_hp','error-hp'); err=true; }
-                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email','error-email'); err=true; }
-                if (!jurusan) { showError('jurusan','error-jurusan'); err=true; }
-                if (!jk) { showError(null,'error-jk'); err=true; }
-                if (err) {
-                    const firstErr = document.querySelector('.error');
-                    if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
-                    return;
-                }
-
-                const accessKey = document.querySelector('input[name="access_key"]').value.trim();
-                if (accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY' || accessKey === '') {
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            formMessage.style.display = 'none';
+            try {
+                const formData = new FormData(registrationForm);
+                const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body:formData });
+                const result = await res.json();
+                if (result.success) {
+                    formMessage.classList.add('success');
+                    formMessage.style.display = 'block';
+                    formMessage.textContent = '✅ Pendaftaran berhasil dikirim! Tim PPDB akan menghubungi Anda dalam 1×24 jam kerja.';
+                    registrationForm.reset();
+                    clearAllErrors();
+                } else {
                     formMessage.classList.add('error-msg-box');
                     formMessage.style.display = 'block';
-                    formMessage.innerHTML = '⚠️ <strong>Email belum dikonfigurasi!</strong><br><small>Ganti <code>YOUR_WEB3FORMS_ACCESS_KEY</code> dengan Access Key dari <a href="https://web3forms.com/" target="_blank">web3forms.com</a>.</small>';
-                    formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
-                    return;
+                    formMessage.textContent = '❌ Gagal: ' + (result.message || 'Terjadi kesalahan.');
                 }
-
-                submitBtn.disabled = true;
-                submitText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                formMessage.style.display = 'none';
-                try {
-                    const formData = new FormData(registrationForm);
-                    const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body:formData });
-                    const result = await res.json();
-                    if (result.success) {
-                        formMessage.classList.add('success');
-                        formMessage.style.display = 'block';
-                        formMessage.textContent = '✅ Pendaftaran berhasil dikirim! Tim PPDB akan menghubungi Anda dalam 1×24 jam kerja.';
-                        registrationForm.reset();
-                        clearAllErrors();
-                    } else {
-                        formMessage.classList.add('error-msg-box');
-                        formMessage.style.display = 'block';
-                        formMessage.textContent = '❌ Gagal: ' + (result.message || 'Terjadi kesalahan.');
-                    }
-                } catch (err) {
-                    formMessage.classList.add('error-msg-box');
-                    formMessage.style.display = 'block';
-                    formMessage.textContent = '❌ Gagal terhubung ke server. Periksa koneksi internet.';
-                } finally {
-                    submitBtn.disabled = false;
-                    submitText.style.display = 'inline';
-                    spinner.style.display = 'none';
-                    formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
-                }
-            });
-
-            // ========== CAROUSEL SLIDER ==========
-            const track = document.getElementById('carouselTrack');
-            const slides = Array.from(track.children);
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const dotsContainer = document.getElementById('carouselDots');
-
-            let currentIndex = 0;
-
-            // Buat dot indikator
-            slides.forEach((_, i) => {
-                const dot = document.createElement('button');
-                dot.classList.add('carousel-dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
-            });
-            const dots = Array.from(dotsContainer.children);
-
-            function updateSlide(index) {
-                track.style.transform = `translateX(-${index * 100}%)`;
-                dots.forEach(d => d.classList.remove('active'));
-                dots[index].classList.add('active');
-                currentIndex = index;
+            } catch (err) {
+                formMessage.classList.add('error-msg-box');
+                formMessage.style.display = 'block';
+                formMessage.textContent = '❌ Gagal terhubung ke server. Periksa koneksi internet.';
+            } finally {
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                spinner.style.display = 'none';
+                formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
             }
+        });
 
-            function goToSlide(index) {
-                updateSlide(index);
-            }
-
-            function nextSlide() {
-                const newIndex = (currentIndex + 1) % slides.length;
-                updateSlide(newIndex);
-            }
-
-            function prevSlide() {
-                const newIndex = (currentIndex - 1 + slides.length) % slides.length;
-                updateSlide(newIndex);
-            }
-
-            nextBtn.addEventListener('click', nextSlide);
-            prevBtn.addEventListener('click', prevSlide);
-
-            // Auto slide setiap 5 detik
-            let autoSlide = setInterval(nextSlide, 5000);
-
-            // Hentikan auto slide saat hover
-            const carousel = document.getElementById('aboutCarousel');
-            carousel.addEventListener('mouseenter', () => clearInterval(autoSlide));
-            carousel.addEventListener('mouseleave', () => {
-                autoSlide = setInterval(nextSlide, 5000);
-            });
-
-            // Touch swipe support
-            let touchStartX = 0;
-            track.addEventListener('touchstart', e => {
-                touchStartX = e.touches[0].clientX;
-            });
-            track.addEventListener('touchend', e => {
-                const diff = touchStartX - e.changedTouches[0].clientX;
-                if (diff > 40) nextSlide();
-                else if (diff < -40) prevSlide();
-            });
-
-        })();
+        // SLIDESHOW
+        const slideshowImages = [
+            'sekolah.jpeg'
+            'depan2.jpeg'
+        ];
+        const imgElement = document.getElementById('slideshowImage');
+        const dotsContainer = document.getElementById('slideshowDots');
+        let currentSlide = 0;
+        imgElement.src = slideshowImages[0];
+        slideshowImages.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => { changeSlide(index); resetTimer(); });
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.slideshow-dots .dot');
+        function changeSlide(index) {
+            imgElement.style.opacity = '0';
+            setTimeout(() => { imgElement.src = slideshowImages[index]; imgElement.style.opacity = '1'; }, 200);
+            dots.forEach(d => d.classList.remove('active'));
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+        function nextSlide() { changeSlide((currentSlide + 1) % slideshowImages.length); }
+        let slideInterval = setInterval(nextSlide, 3000);
+        function resetTimer() { clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 3000); }
+        document.getElementById('slideshow').addEventListener('mouseenter', () => clearInterval(slideInterval));
+        document.getElementById('slideshow').addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 3000); });
     </script>
 </body>
 </html>
