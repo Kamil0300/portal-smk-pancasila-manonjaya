@@ -188,25 +188,23 @@
                     </div>
                 </div>
 
-                <div class="form-card" id="formCard">
+               <div class="form-card" id="formCard">
                     <h3>📝 Formulir Pendaftaran Siswa Baru</h3>
                     <p class="form-subtitle">SMK Pancasila Manonjaya · Tahun Ajaran 2025/2026</p>
 
                     <form id="registrationForm" enctype="multipart/form-data">
-                        <input type="hidden" name="access_key" value="f1313ef4-be04-4afd-8f02-1933359eeb18">
+                        <input type="hidden" name="access_key" value="MASUKKAN_ACCESS_KEY_ANDA_DISINI">
                         <input type="hidden" name="subject" value="Pendaftaran PPDB Baru - SMK Pancasila Manonjaya">
                         <input type="hidden" name="from_name" value="Formulir PPDB SMK Pancasila">
                         <input type="hidden" name="redirect" value="">
 
+                        <!-- Nama Lengkap & Jenis Kelamin -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="nama">Nama Lengkap <span class="required">*</span></label>
                                 <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
                                 <span class="error-msg" id="error-nama">Nama lengkap wajib diisi</span>
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group">
                                 <label>Jenis Kelamin <span class="required">*</span></label>
                                 <div class="radio-group">
@@ -217,20 +215,21 @@
                             </div>
                         </div>
 
+                        <!-- Asal Sekolah & Alamat Lengkap -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="asal_sekolah">Asal Sekolah <span class="required">*</span></label>
                                 <input type="text" id="asal_sekolah" name="asal_sekolah" placeholder="SMP/MTs asal" required>
                                 <span class="error-msg" id="error-asal">Asal sekolah wajib diisi</span>
                             </div>
+                            <div class="form-group">
+                                <label for="alamat">Alamat Lengkap <span class="required">*</span></label>
+                                <textarea id="alamat" name="alamat" rows="2" placeholder="Tulis alamat lengkap Anda" required></textarea>
+                                <span class="error-msg" id="error-alamat">Alamat wajib diisi</span>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="alamat">Alamat Lengkap <span class="required">*</span></label>
-                            <textarea id="alamat" name="alamat" rows="2" placeholder="Tulis alamat lengkap Anda" required></textarea>
-                            <span class="error-msg" id="error-alamat">Alamat wajib diisi</span>
-                        </div>
-
+                        <!-- Nama Orang Tua & Nomor WA -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="nama_ortu">Nama Orang Tua / Wali <span class="required">*</span></label>
@@ -244,6 +243,7 @@
                             </div>
                         </div>
 
+                        <!-- Email & Jurusan -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -254,13 +254,17 @@
                                 <label for="jurusan">Jurusan Pilihan <span class="required">*</span></label>
                                 <select id="jurusan" name="jurusan" required>
                                     <option value="">-- Pilih Jurusan --</option>
-                                    <option value="TKJ">Akuntansi & Keuangan Lembaga (AKL)</option>
-                                    <option value="TKRO">Desain Komunikasi Visual (DKV)</option>
-                                    <option value="TBSM">Pemasaran (PM)</option>
+                                    <option value="TKJ">Teknik Komputer & Jaringan (TKJ)</option>
+                                    <option value="TKRO">Teknik Kendaraan Ringan Otomotif (TKRO)</option>
+                                    <option value="TBSM">Teknik Bisnis Sepeda Motor (TBSM)</option>
+                                    <option value="AKL">Akuntansi & Keuangan Lembaga (AKL)</option>
+                                    <option value="OTKP">Otomatisasi Tata Kelola Perkantoran (OTKP)</option>
+                                    <option value="MM">Multimedia (MM)</option>
                                 </select>
                                 <span class="error-msg" id="error-jurusan">Pilih jurusan yang diminati</span>
                             </div>
                         </div>
+
                         <button type="submit" class="btn-submit" id="submitBtn">
                             <span class="spinner" id="spinner"></span>
                             <span id="submitText"><i class="fas fa-paper-plane"></i> Kirim Pendaftaran</span>
@@ -411,14 +415,15 @@
             formMessage.textContent = '';
         }
 
-        const inputs = ['nama','asal_sekolah','alamat','nama_ortu','no_hp','email','jurusan'];
-        inputs.forEach(id => {
+        const fieldIds = ['nama','asal_sekolah','alamat','nama_ortu','no_hp','email','jurusan'];
+        fieldIds.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', () => clearError(id, 'error-'+id));
                 el.addEventListener('change', () => clearError(id, 'error-'+id));
             }
         });
+
         document.querySelectorAll('input[name="jenis_kelamin"]').forEach(r => r.addEventListener('change', () => clearError(null, 'error-jk')));
 
         registrationForm.addEventListener('submit', async function(e) {
@@ -427,12 +432,15 @@
             let err = false;
             const val = id => document.getElementById(id)?.value.trim() || '';
             const nama = val('nama');
-            const asal = val('asal_sekolah'), alamat = val('alamat');
-            const ortu = val('nama_ortu'), hp = val('no_hp'), email = val('email');
+            const asal = val('asal_sekolah');
+            const alamat = val('alamat');
+            const ortu = val('nama_ortu');
+            const hp = val('no_hp');
+            const email = val('email');
             const jurusan = document.getElementById('jurusan').value;
             const jk = document.querySelector('input[name="jenis_kelamin"]:checked');
 
-            if (!nama) { showError('nama','error-nama'); err=true; }           
+            if (!nama) { showError('nama','error-nama'); err=true; }
             if (!asal) { showError('asal_sekolah','error-asal'); err=true; }
             if (!alamat) { showError('alamat','error-alamat'); err=true; }
             if (!ortu) { showError('nama_ortu','error-ortu'); err=true; }
@@ -447,7 +455,7 @@
             }
 
             const accessKey = document.querySelector('input[name="access_key"]').value.trim();
-            if (accessKey === 'f1313ef4-be04-4afd-8f02-1933359eeb18' || accessKey === 'f1313ef4-be04-4afd-8f02-1933359eeb18') {
+            if (accessKey === 'MASUKKAN_ACCESS_KEY_ANDA_DISINI' || accessKey === '') {
                 formMessage.classList.add('error-msg-box');
                 formMessage.style.display = 'block';
                 formMessage.innerHTML = '⚠️ <strong>Access Key belum diganti!</strong><br><small>Ganti dengan Access Key dari <a href="https://web3forms.com/" target="_blank">web3forms.com</a>.</small>';
