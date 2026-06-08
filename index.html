@@ -3,28 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="LOGO PANCA.png">
     <title>SMK Pancasila Manonjaya - Portal Resmi</title>
     <meta name="description" content="Portal resmi SMK Pancasila Manonjaya, Tasikmalaya. Informasi PPDB, jurusan, dan profil sekolah.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #0D3B66;
+            --primary-light: #1a5a8a;
+            --gold: #C8963E;
+            --gold-light: #e0b868;
+            --bg-light: #F7F8FA;
+            --bg-white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-medium: #555;
+            --text-light: #777;
+            --border: #e0e4e8;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 6px 24px rgba(0,0,0,0.10);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.14);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --max-width: 1200px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; scroll-padding-top:80px; }
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            color: var(--text-dark);
+            background: var(--bg-white);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        .navbar {
+            position:fixed; top:0; left:0; width:100%; z-index:1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom:1px solid var(--border);
+            transition:var(--transition); padding:0 20px;
+        }
+        .navbar.scrolled { box-shadow:var(--shadow-md); }
+        .navbar-inner {
+            max-width:var(--max-width); margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between; height:72px;
+        }
+        .nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--primary); }
+        .nav-logo {
+            width:48px; height:48px; border-radius:50%; overflow:hidden;
+            display:flex; align-items:center; justify-content:center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow:0 4px 12px rgba(13,59,102,0.25);
+            flex-shrink:0; color:#fff; font-weight:800; font-size:1.1rem;
+        }
+        .nav-logo img { width:100%; height:100%; object-fit:cover; display:block; }
+        .nav-brand-text { display:flex; flex-direction:column; }
+        .school-name { font-weight:700; font-size:1.05rem; line-height:1.2; color:var(--primary); }
+        .school-sub { font-size:0.72rem; color:var(--text-light); letter-spacing:0.5px; }
+        .nav-links { display:flex; list-style:none; gap:6px; align-items:center; }
+        .nav-links a {
+            text-decoration:none; color:var(--text-medium); padding:8px 16px;
+            border-radius:50px; font-weight:500; font-size:0.9rem; transition:var(--transition); white-space:nowrap;
+        }
+        .nav-links a:hover, .nav-links a.active { background:#eef4fa; color:var(--primary); }
+        .nav-cta { background:var(--gold)!important; color:#fff!important; font-weight:600!important; padding:10px 20px!important; box-shadow:0 3px 12px rgba(200,150,62,0.3); }
+        .nav-cta:hover { background:var(--gold-light)!important; box-shadow:0 6px 20px rgba(200,150,62,0.4); transform:translateY(-1px); }
+        .hamburger { display:none; flex-direction:column; cursor:pointer; gap:5px; padding:8px; z-index:1001; }
+        .hamburger span { width:26px; height:2.5px; background:var(--primary); border-radius:4px; transition:var(--transition); }
+        .hamburger.active span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+        .hamburger.active span:nth-child(2) { opacity:0; }
+        .hamburger.active span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+        .hero {
+            min-height:100vh; display:flex; align-items:center; justify-content:center;
+            position:relative;
+            background: url('sekolah.jpeg') center/cover no-repeat;
+            overflow:hidden; padding:100px 20px 60px;
+        }
+        .hero::after {
+            content:''; position:absolute; inset:0;
+            background: linear-gradient(135deg, rgba(13,59,102,0.85), rgba(13,59,102,0.55));
+            z-index:1;
+        }
+        .hero-container { position:relative; z-index:2; max-width:var(--max-width); width:100%; text-align:center; }
+        .hero-content { color:#fff; }
+        .hero-badge {
+            display:inline-block; background:rgba(255,255,255,0.2); color:#fff;
+            font-weight:600; font-size:0.85rem; padding:6px 18px; border-radius:50px;
+            letter-spacing:1px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.3);
+            backdrop-filter:blur(4px);
+        }
+        .hero h1 { font-size:clamp(2.2rem,5vw,3.4rem); font-weight:800; color:#fff; line-height:1.2; margin-bottom:16px; letter-spacing:-0.5px; }
+        .hero h1 .highlight { color:var(--gold); }
+        .hero p { font-size:1.15rem; color:rgba(255,255,255,0.9); max-width:650px; margin:0 auto 32px; line-height:1.8; }
+        .hero-buttons { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+        .btn { display:inline-block; padding:14px 28px; border-radius:50px; font-weight:600; font-size:0.95rem; text-decoration:none; transition:var(--transition); cursor:pointer; border:none; letter-spacing:0.3px; }
+        .btn-primary { background:var(--primary); color:#fff; box-shadow:0 6px 20px rgba(13,59,102,0.3); }
+        .btn-primary:hover { background:var(--primary-light); transform:translateY(-2px); box-shadow:0 10px 28px rgba(13,59,102,0.4); }
+        .btn-gold { background:var(--gold); color:#fff; box-shadow:0 6px 20px rgba(200,150,62,0.3); }
+        .btn-gold:hover { background:var(--gold-light); transform:translateY(-2px); box-shadow:0 10px 28px rgba(200,150,62,0.4); }
+        .btn-outline { background:transparent; color:#fff; border:2px solid #fff; }
+        .btn-outline:hover { background:#fff; color:var(--primary); transform:translateY(-2px); }
+        .hero-stats {
+            display:flex; gap:40px; flex-wrap:wrap; justify-content:center;
+            margin-top:48px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.3);
+        }
+        .hero-stat { text-align:center; }
+        .hero-stat-number { font-size:2rem; font-weight:800; color:#fff; }
+        .hero-stat-label { font-size:0.85rem; color:rgba(255,255,255,0.8); margin-top:2px; }
+        .section { padding:80px 20px; }
+        .section-alt { background:var(--bg-light); }
+        .section-inner { max-width:var(--max-width); margin:0 auto; }
+        .section-header { text-align:center; margin-bottom:50px; }
+        .section-header .label { display:inline-block; font-weight:600; font-size:0.8rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin-bottom:8px; }
+        .section-header h2 { font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; color:var(--primary); margin-bottom:10px; }
+        .section-header .divider { width:50px; height:3px; background:var(--gold); margin:0 auto; border-radius:4px; }
+        .section-header p { color:var(--text-medium); margin-top:12px; max-width:600px; margin-left:auto; margin-right:auto; }
+        .about-grid { display:flex; flex-direction:column; align-items:center; gap:40px; }
+        .about-slider { width:100%; max-width:600px; margin:0 auto; }
+        .slideshow-container {
+            position:relative; width:100%; aspect-ratio:4/3;
+            border-radius:var(--radius); overflow:hidden;
+            box-shadow:var(--shadow-lg); background:#f0f4f8;
+        }
+        .slideshow-container img {
+            width:100%; height:100%; object-fit:cover;
+            transition:opacity 0.3s ease;
+        }
+        .slideshow-dots {
+            position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+            display:flex; gap:8px; z-index:5;
+        }
+        .slideshow-dots .dot {
+            width:10px; height:10px; border-radius:50%;
+            border:2px solid #fff; background:rgba(255,255,255,0.5);
+            cursor:pointer; transition:var(--transition);
+        }
+        .slideshow-dots .dot.active { background:#fff; border-color:#fff; }
+        .about-text { width:100%; max-width:var(--max-width); margin:0 auto; }
+        .about-text h3 { font-size:1.5rem; color:var(--primary); margin-bottom:14px; font-weight:700; }
+        .about-text p { color:var(--text-medium); margin-bottom:16px; line-height:1.8; }
+        .vision-mission-cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+        .vm-card {
+            background:var(--bg-white); border:1px solid var(--border);
+            border-radius:var(--radius-sm); padding:20px; box-shadow:var(--shadow-sm); transition:var(--transition);
+        }
+        .vm-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+        .vm-card .vm-icon { font-size:1.8rem; margin-bottom:8px; }
+        .vm-card h4 { font-weight:700; color:var(--primary); margin-bottom:4px; font-size:0.95rem; }
+        .vm-card p { font-size:0.85rem; color:var(--text-medium); margin:0; line-height:1.6; }
+        .programs-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; }
+        .program-card {
+            background:var(--bg-white); border:1px solid var(--border); border-radius:var(--radius);
+            padding:28px 24px; text-align:center; box-shadow:var(--shadow-sm); transition:var(--transition);
+            position:relative; overflow:hidden;
+        }
+        .program-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:var(--gold); }
+        .program-card .program-icon {
+            width:64px; height:64px; border-radius:50%;
+            background:rgba(13,59,102,0.06); display:flex; align-items:center; justify-content:center;
+            margin:0 auto 16px; font-size:1.8rem; color:var(--primary); transition:var(--transition);
+        }
+        .program-card:hover .program-icon { background:var(--primary); color:#fff; box-shadow:0 8px 24px rgba(13,59,102,0.3); }
+        .program-card h3 { font-weight:700; color:var(--primary); font-size:1.1rem; margin-bottom:6px; }
+        .program-card .program-code { font-size:0.78rem; color:var(--gold); font-weight:600; letter-spacing:0.5px; margin-bottom:8px; }
+        .program-card p { font-size:0.88rem; color:var(--text-medium); line-height:1.6; }
+        .facilities-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:16px; }
+        .facility-item {
+            background:var(--bg-white); border:1px solid var(--border); border-radius:var(--radius-sm);
+            padding:24px 16px; text-align:center; box-shadow:var(--shadow-sm); transition:var(--transition);
+        }
+        .facility-item:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); }
+        .facility-item .facility-icon { font-size:2.2rem; margin-bottom:10px; }
+        .facility-item h4 { font-weight:600; color:var(--primary); font-size:0.9rem; }
+        .registration-wrapper { display:grid; grid-template-columns:1fr 1.4fr; gap:40px; align-items:start; }
+        .registration-info { position:sticky; top:100px; }
+        .registration-info h3 { font-size:1.5rem; color:var(--primary); margin-bottom:12px; font-weight:700; }
+        .registration-info ul { list-style:none; padding:0; }
+        .registration-info ul li {
+            padding:10px 0; border-bottom:1px solid var(--border);
+            display:flex; align-items:flex-start; gap:10px; font-size:0.9rem; color:var(--text-medium);
+        }
+        .registration-info ul li i { color:var(--success); margin-top:3px; flex-shrink:0; }
+        .registration-alert {
+            background:#fef9e7; border:1px solid #f9e79f; border-radius:var(--radius-sm);
+            padding:14px 18px; margin-top:16px; font-size:0.85rem; color:#7d6608;
+            display:flex; align-items:flex-start; gap:8px;
+        }
+        .form-card {
+            background:var(--bg-white); border:1px solid var(--border);
+            border-radius:var(--radius); padding:32px 28px; box-shadow:var(--shadow-md);
+        }
+        .form-card h3 { font-size:1.3rem; font-weight:700; color:var(--primary); margin-bottom:4px; text-align:center; }
+        .form-card .form-subtitle { text-align:center; color:var(--text-light); font-size:0.85rem; margin-bottom:24px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .form-group { margin-bottom:18px; }
+        .form-group.full { grid-column:1/-1; }
+        .form-group label { display:block; font-weight:600; font-size:0.85rem; color:var(--text-dark); margin-bottom:5px; }
+        .form-group label .required { color:var(--error); }
+        .form-group input, .form-group select, .form-group textarea {
+            width:100%; padding:12px 14px; border:1.5px solid var(--border);
+            border-radius:var(--radius-sm); font-size:0.9rem; font-family:inherit;
+            color:var(--text-dark); transition:var(--transition); background:#fafbfc;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline:none; border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(13,59,102,0.08); background:#fff;
+        }
+        .form-group input.error, .form-group select.error { border-color:var(--error); }
+        .form-group .file-hint { font-size:0.75rem; color:var(--text-light); margin-top:4px; }
+        .form-group .error-msg { font-size:0.75rem; color:var(--error); margin-top:3px; display:none; }
+        .form-group .error-msg.show { display:block; }
+        .radio-group { display:flex; gap:20px; flex-wrap:wrap; }
+        .radio-group label { display:flex; align-items:center; gap:6px; font-weight:400; cursor:pointer; font-size:0.9rem; }
+        .radio-group input[type="radio"] { width:auto; accent-color:var(--primary); }
+        .btn-submit {
+            width:100%; padding:15px; font-size:1rem; font-weight:700;
+            background:var(--gold); color:#fff; border:none; border-radius:50px;
+            cursor:pointer; transition:var(--transition); letter-spacing:0.5px;
+            box-shadow:0 6px 20px rgba(200,150,62,0.3);
+            display:flex; align-items:center; justify-content:center; gap:8px;
+        }
+        .btn-submit:hover { background:var(--gold-light); box-shadow:0 10px 28px rgba(200,150,62,0.4); transform:translateY(-1px); }
+        .btn-submit:disabled { opacity:0.7; cursor:not-allowed; }
+        .spinner {
+            display:none; width:20px; height:20px;
+            border:2.5px solid rgba(255,255,255,0.3); border-top-color:#fff;
+            border-radius:50%; animation:spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .form-message {
+            display:none; padding:14px 18px; border-radius:var(--radius-sm);
+            margin-top:16px; font-weight:500; font-size:0.9rem; text-align:center;
+        }
+        .form-message.success { display:block; background:#eafaf1; color:#1e7e34; border:1px solid #a3e4bc; }
+        .form-message.error-msg-box { display:block; background:#fdecea; color:#c0392b; border:1px solid #f5b7b1; }
+        .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+        .contact-info-item { display:flex; gap:14px; margin-bottom:24px; align-items:flex-start; }
+        .contact-info-item .contact-icon {
+            width:44px; height:44px; border-radius:50%;
+            background:rgba(13,59,102,0.06); display:flex; align-items:center; justify-content:center;
+            flex-shrink:0; font-size:1.1rem; color:var(--primary);
+        }
+        .contact-info-item h4 { font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:2px; }
+        .contact-info-item p { font-size:0.88rem; color:var(--text-medium); margin:0; }
+        .map-embed { width:100%; height:320px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md); border:1px solid var(--border); }
+        .map-embed iframe { width:100%; height:100%; border:none; }
+        .footer { background:var(--primary); color:#c8d6e5; padding:40px 20px 20px; }
+        .footer-inner { max-width:var(--max-width); margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr; gap:30px; }
+        .footer h4 { color:#fff; font-weight:700; margin-bottom:12px; font-size:1rem; }
+        .footer p, .footer a { color:#c8d6e5; font-size:0.85rem; text-decoration:none; line-height:1.8; }
+        .footer a:hover { color:var(--gold-light); text-decoration:underline; }
+        .footer-bottom { max-width:var(--max-width); margin:20px auto 0; padding-top:20px; border-top:1px solid rgba(255,255,255,0.12); text-align:center; font-size:0.8rem; color:#9aafc4; }
+        .scroll-top {
+            position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%;
+            background:var(--primary); color:#fff; border:none; cursor:pointer; font-size:1.1rem;
+            z-index:999; box-shadow:var(--shadow-md); transition:var(--transition);
+            opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center;
+        }
+        .scroll-top.visible { opacity:1; pointer-events:auto; }
+        .scroll-top:hover { background:var(--primary-light); transform:translateY(-3px); }
+        @media (max-width:1024px) {
+            .registration-wrapper { grid-template-columns:1fr; }
+            .registration-info { position:static; }
+            .contact-grid { grid-template-columns:1fr; }
+            .footer-inner { grid-template-columns:1fr 1fr; }
+        }
+        @media (max-width:768px) {
+            .nav-links {
+                position:fixed; top:0; right:-100%; width:280px; height:100vh;
+                background:#fff; flex-direction:column; padding:90px 30px 30px;
+                gap:4px; box-shadow:var(--shadow-lg); transition:var(--transition); z-index:999;
+            }
+            .nav-links.open { right:0; }
+            .nav-links a { display:block; padding:12px 16px; border-radius:var(--radius-sm); font-size:0.95rem; }
+            .hamburger { display:flex; }
+            .about-slider { max-width:100%; }
+            .form-row { grid-template-columns:1fr; }
+            .vision-mission-cards { grid-template-columns:1fr; }
+            .footer-inner { grid-template-columns:1fr; gap:20px; }
+            .programs-grid { grid-template-columns:1fr 1fr; }
+            .facilities-grid { grid-template-columns:1fr 1fr; }
+        }
+        @media (max-width:480px) {
+            .programs-grid { grid-template-columns:1fr; }
+            .hero h1 { font-size:1.7rem; }
+            .hero p { font-size:0.95rem; }
+            .btn { padding:12px 20px; font-size:0.85rem; }
+            .form-card { padding:20px 16px; }
+            .hero-buttons { flex-direction:column; align-items:center; }
+        }
+    </style>
 </head>
 <body>
-
-    <!-- ==================== NAVBAR ==================== -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
             <a href="#home" class="nav-brand">
-                <div class="nav-logo">
-                    <img src="LOGO PANCA.png" alt="Logo SMK Pancasila Manonjaya">
-                </div>
-                <div class="nav-brand-tex
-.nav-brand-text { display:flex; flex-direction:column; }
-.school-name { font-weight:700; font-size:1.05rem; line-height:1.2; color:var(--primary); }
-.school-sub { font-size:0.72rem; color:var(--text-light); letter-spacing:0.5px; }
-.nav-links { display:flex; list-style:none; gap:6px; align-items:center; }
-.nav-links a {
- t">
+                <div class="nav-logo">SMK</div>
+                <div class="nav-brand-text">
                     <span class="school-name">SMK Pancasila</span>
                     <span class="school-sub">Manonjaya · Tasikmalaya</span>
                 </div>
@@ -42,39 +317,26 @@
         </div>
     </nav>
 
-    <!-- ==================== HERO (gambar sebagai background) ==================== -->
     <section class="hero" id="home">
         <div class="hero-container">
             <div class="hero-content">
                 <span class="hero-badge">🏫 PPDB TAHUN AJARAN 2025/2026</span>
                 <h1>Wujudkan Masa Depan Gemilang di <span class="highlight">SMK Pancasila</span> Manonjaya</h1>
-                <p>
-                    Sekolah Menengah Kejuruan unggulan di Manonjaya, yang mencetak lulusan
-                    siap kerja, berkarakter Pancasila, dan berdaya saing global.
-                </p>
+                <p>Sekolah Menengah Kejuruan unggulan di Manonjaya, Tasikmalaya yang mencetak lulusan siap kerja, berkarakter Pancasila, dan berdaya saing global.</p>
                 <div class="hero-buttons">
                     <a href="#ppdb" class="btn btn-gold"><i class="fas fa-pen-to-square"></i> Daftar Sekarang</a>
                     <a href="#tentang" class="btn btn-outline"><i class="fas fa-info-circle"></i> Kenali Lebih Lanjut</a>
                 </div>
                 <div class="hero-stats">
-                    <div class="hero-stat">
-                        <div class="hero-stat-number">3</div>
-                        <div class="hero-stat-label">Program Keahlian</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="hero-stat-number">50+</div>
-                        <div class="hero-stat-label">Mitra Industri</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="hero-stat-number">98%</div>
-                        <div class="hero-stat-label">Lulusan Terserap</div>
-                    </div>
+                    <div class="hero-stat"><div class="hero-stat-number">3</div><div class="hero-stat-label">Program Keahlian</div></div>
+                    <div class="hero-stat"><div class="hero-stat-number">50+</div><div class="hero-stat-label">Mitra Industri</div></div>
+                    <div class="hero-stat"><div class="hero-stat-number">98%</div><div class="hero-stat-label">Lulusan Terserap</div></div>
+                    <div class="hero-stat"><div class="hero-stat-number">30+</div><div class="hero-stat-label">Tahun Berpengalaman</div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ==================== TENTANG (dengan Slider Foto) ==================== -->
     <section class="section" id="tentang">
         <div class="section-inner">
             <div class="section-header">
@@ -84,53 +346,25 @@
                 <p>Mengenal lebih dekat lembaga pendidikan yang berkomitmen mencetak generasi unggul</p>
             </div>
             <div class="about-grid">
-                 <!-- SLIDESHOW FOTO OTOMATIS -->
-                  <div class="about-grid">
-                <!-- SLIDER FOTO menggantikan placeholder -->
                 <div class="about-slider">
-                    <div class="carousel" id="aboutCarousel">
-                        <div class="carousel-track" id="carouselTrack">
-                            <!-- Slide 1 -->
-                            <div class="carousel-slide">
-                                <img src="depan2.jpeg" alt="Gedung SMK Pancasila">
-                            </div>
-                            <!-- Slide 2 -->
-                            <div class="carousel-slide">
-                                <img src="sekolah2.jpg" alt="Ruang Kelas">
-                            </div>
-                            <!-- Slide 3 -->
-                            <div class="carousel-slide">
-                                <img src="sekolah3.jpg" alt="Kegiatan Praktik">
-                            </div>
-                            <!-- Slide 4 -->
-                            <div class="carousel-slide">
-                                <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop" alt="Lingkungan Sekolah">
-                            </div>
-                        </div>
-                        <!-- Tombol Navigasi -->
-                        <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
-                        <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-                        <!-- Indikator Dot -->
-                        <div class="carousel-dots" id="carouselDots"></div>
-                        <div class="vision-mission-cards">
-                        <div class="vm-card">
-                            <div class="vm-icon">🎯</div>
-                            <h4>Visi</h4>
-                            <p>Menjadi SMK unggulan yang menghasilkan lulusan kompeten, berkarakter, dan berdaya saing global.</p>
-                        </div>
-                        <div class="vm-card">
-                            <div class="vm-icon">🚀</div>
-                            <h4>Misi</h4>
-                            <p>Menyelenggarakan pendidikan vokasi berkualitas berbasis teknologi dan kemitraan industri.</p>
+                    <div class="slideshow-container" id="slideshow">
+                        <img id="slideshowImage" src="" alt="Foto SMK Pancasila">
+                        <div class="slideshow-dots" id="slideshowDots"></div>
                     </div>
                 </div>
-                  </div>
+                <div class="about-text">
+                    <h3>Sejarah Singkat</h3>
+                    <p>SMK Pancasila Manonjaya berdiri sejak tahun 1990‑an di Kecamatan Manonjaya, Kabupaten Tasikmalaya, Jawa Barat. Sekolah ini hadir untuk menjawab kebutuhan tenaga terampil di berbagai sektor industri.</p>
+                    <p>Dengan mengusung nilai‑nilai Pancasila, sekolah ini tidak hanya fokus pada keterampilan teknis, tetapi juga pembentukan karakter siswa yang berintegritas, disiplin, dan berjiwa wirausaha.</p>
+                    <div class="vision-mission-cards">
+                        <div class="vm-card"><div class="vm-icon">🎯</div><h4>Visi</h4><p>Menjadi SMK unggulan yang menghasilkan lulusan kompeten, berkarakter, dan berdaya saing global.</p></div>
+                        <div class="vm-card"><div class="vm-icon">🚀</div><h4>Misi</h4><p>Menyelenggarakan pendidikan vokasi berkualitas berbasis teknologi dan kemitraan industri.</p></div>
+                    </div>
+                </div>
             </div>
-                  </div>
-            </div>
+        </div>
     </section>
 
-    <!-- ==================== JURUSAN ==================== -->
     <section class="section section-alt" id="jurusan">
         <div class="section-inner">
             <div class="section-header">
@@ -140,29 +374,16 @@
                 <p>Pilih jurusan sesuai minat dan bakatmu untuk masa depan yang cerah</p>
             </div>
             <div class="programs-grid">
-                <div class="program-card">
-                    <div class="program-icon"><i class="fas fa-laptop-code"></i></div>
-                    <span class="program-code">PM</span>
-                    <h3>Pemasaran</h3>
-                    <p>Keahlian yang mempelajari dasar - dasar kemampuan untuk menjadi seorang marketing.</p>
-                </div>
-                <div class="program-card">
-                    <div class="program-icon"><i class="fas fa-calculator"></i></div>
-                    <span class="program-code">AKL</span>
-                    <h3>Akuntansi & Keuangan Lembaga</h3>
-                    <p>Mahir dalam pencatatan keuangan, perpajakan, dan software akuntansi profesional.</p>
-                </div>
-                <div class="program-card">
-                    <div class="program-icon"><i class="fas fa-paint-brush"></i></div>
-                    <span class="program-code">DKV</span>
-                    <h3>Desain Komunikasi Visual</h3>
-                    <p>Kreativitas dalam desain grafis, animasi, videografi, dan produksi konten digital.</p>
-                </div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-laptop-code"></i></div><span class="program-code">TKJ</span><h3>Teknik Komputer & Jaringan</h3><p>Menguasai perakitan komputer, jaringan LAN/WAN, troubleshooting, dan administrasi server.</p></div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-car"></i></div><span class="program-code">TKRO</span><h3>Teknik Kendaraan Ringan Otomotif</h3><p>Keahlian dalam perawatan, perbaikan, dan diagnosa kendaraan ringan modern.</p></div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-motorcycle"></i></div><span class="program-code">TBSM</span><h3>Teknik Bisnis Sepeda Motor</h3><p>Kompetensi di bidang servis, perawatan, dan bisnis sepeda motor terkini.</p></div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-calculator"></i></div><span class="program-code">AKL</span><h3>Akuntansi & Keuangan Lembaga</h3><p>Mahir dalam pencatatan keuangan, perpajakan, dan software akuntansi profesional.</p></div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-file-alt"></i></div><span class="program-code">OTKP</span><h3>Otomatisasi Tata Kelola Perkantoran</h3><p>Keterampilan administrasi perkantoran modern, kearsipan digital, dan tata kelola.</p></div>
+                <div class="program-card"><div class="program-icon"><i class="fas fa-paint-brush"></i></div><span class="program-code">MM</span><h3>Multimedia</h3><p>Kreativitas dalam desain grafis, animasi, videografi, dan produksi konten digital.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ==================== FASILITAS ==================== -->
     <section class="section">
         <div class="section-inner">
             <div class="section-header">
@@ -173,10 +394,10 @@
             </div>
             <div class="facilities-grid">
                 <div class="facility-item"><div class="facility-icon">💻</div><h4>Lab Komputer</h4></div>
+                <div class="facility-item"><div class="facility-icon">🔧</div><h4>Business Center</h4></div>
                 <div class="facility-item"><div class="facility-icon">📚</div><h4>Perpustakaan</h4></div>
                 <div class="facility-item"><div class="facility-icon">🏟️</div><h4>Lapangan Olahraga</h4></div>
-                <div class="facility-item"><div class="facility-icon">🎨</div><h4>Studio & Lab Komputer</h4></div>
-                <div class="facility-item"><div class="facility-icon">🏪</div><h4>Business Center</h4></div>
+                <div class="facility-item"><div class="facility-icon">🎨</div><h4>Studio DKV</h4></div>
                 <div class="facility-item"><div class="facility-icon">📡</div><h4>WiFi</h4></div>
                 <div class="facility-item"><div class="facility-icon">🏥</div><h4>UKS</h4></div>
                 <div class="facility-item"><div class="facility-icon">🕌</div><h4>Musholla</h4></div>
@@ -184,7 +405,6 @@
         </div>
     </section>
 
-    <!-- ==================== PPDB / FORM PENDAFTARAN ==================== -->
     <section class="section section-alt" id="ppdb">
         <div class="section-inner">
             <div class="section-header">
@@ -201,7 +421,7 @@
                         <li><i class="fas fa-check-circle"></i> Isi semua data dengan benar dan lengkap</li>
                         <li><i class="fas fa-check-circle"></i> Konfirmasi akan dikirim via email/WhatsApp</li>
                         <li><i class="fas fa-check-circle"></i> Pastikan nomor HP aktif untuk verifikasi</li>
-                        <li><i class="fas fa-check-circle"></i> DAFTAR SEKARANG JUGA!!!</li>
+                        <li><i class="fas fa-check-circle"></i> DAFTAR SEKARANG!!!</li>
                     </ul>
                     <div class="registration-alert">
                         <i class="fas fa-info-circle"></i>
@@ -209,17 +429,20 @@
                     </div>
                 </div>
 
-               <div class="form-card" id="formCard">
+                <div class="form-card" id="formCard">
                     <h3>📝 Formulir Pendaftaran Siswa Baru</h3>
-                    <p class="form-subtitle">SMK Pancasila Manonjaya · Tahun Ajaran 2025/2026</p>
+                    <p class="form-subtitle">SMK Pancasila Manonjaya · Tahun Ajaran 2026/2027</p>
 
-                    <form id="registrationForm" enctype="multipart/form-data">
-                        <input type="hidden" name="access_key" value="f1313ef4-be04-4afd-8f02-1933359eeb18">
-                        <input type="hidden" name="subject" value="Pendaftaran PPDB Baru - SMK Pancasila Manonjaya">
-                        <input type="hidden" name="from_name" value="Formulir PPDB SMK Pancasila">
-                        <input type="hidden" name="redirect" value="">
+                    <!-- ============================================================
+                    FORMSPREE CONFIGURATION:
+                    1. Daftar di https://formspree.io
+                    2. Buat form baru & dapatkan Form ID (misal: xyz123)
+                    3. Ganti {FORM_ID} di bawah dengan ID Anda
+                    ============================================================ -->
+                    <form id="registrationForm">
+                        <!-- Field tambahan untuk Formspree (opsional) -->
+                        <input type="hidden" name="_subject" value="Pendaftaran PPDB Baru - SMK Pancasila Manonjaya">
 
-                        <!-- Nama Lengkap & Jenis Kelamin -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="nama">Nama Lengkap <span class="required">*</span></label>
@@ -236,7 +459,6 @@
                             </div>
                         </div>
 
-                        <!-- Asal Sekolah & Alamat Lengkap -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="asal_sekolah">Asal Sekolah <span class="required">*</span></label>
@@ -250,7 +472,6 @@
                             </div>
                         </div>
 
-                        <!-- Nama Orang Tua & Nomor WA -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="nama_ortu">Nama Orang Tua / Wali <span class="required">*</span></label>
@@ -264,7 +485,6 @@
                             </div>
                         </div>
 
-                        <!-- Email & Jurusan -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -275,9 +495,9 @@
                                 <label for="jurusan">Jurusan Pilihan <span class="required">*</span></label>
                                 <select id="jurusan" name="jurusan" required>
                                     <option value="">-- Pilih Jurusan --</option>
+                                    <option value="DKV">Desain Kominikasi Visual (DKV)</option>
+                                    <option value="BDP">Bisnis Daring dan Pemasaran (BDP)</option>
                                     <option value="AKL">Akuntansi & Keuangan Lembaga (AKL)</option>
-                                    <option value="OTKP">Bisnis Daring dan Pemasaran (BDP)</option>
-                                    <option value="MM">Multimedia (MM)</option>
                                 </select>
                                 <span class="error-msg" id="error-jurusan">Pilih jurusan yang diminati</span>
                             </div>
@@ -295,7 +515,6 @@
         </div>
     </section>
 
-    <!-- ==================== KONTAK ==================== -->
     <section class="section" id="kontak">
         <div class="section-inner">
             <div class="section-header">
@@ -306,66 +525,33 @@
             </div>
             <div class="contact-grid">
                 <div>
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div><h4>Alamat</h4><p>Jl. PGA No.09, Kec. Manonjaya, Kab. Tasikmalaya, Jawa Barat 46197</p></div>
-                    </div>
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                        <div><h4>Telepon / WhatsApp</h4><p>(0265) 381117 / 08815719030</p></div>
-                    </div>
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <div><h4>Email</h4><p>smk.pancasila.manonjaya@gmail.com</p></div>
-                    </div>
-                    <div class="contact-info-item">
-                        <div class="contact-icon"><i class="fas fa-clock"></i></div>
-                        <div><h4>Jam Operasional</h4><p>Senin - Jumat: 07.00 - 16.00 WIB<br>Sabtu: 07.00 - 13.00 WIB</p></div>
-                    </div>
+                    <div class="contact-info-item"><div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div><div><h4>Alamat</h4><p>Jl. PGA No. 09, Kec. Manonjaya, Kab. Tasikmalaya, Jawa Barat 46197</p></div></div>
+                    <div class="contact-info-item"><div class="contact-icon"><i class="fas fa-phone"></i></div><div><h4>Telepon / WhatsApp</h4><p>+62 881-5719-030 (Admin PPDB)</p></div></div>
+                    <div class="contact-info-item"><div class="contact-icon"><i class="fas fa-envelope"></i></div><div><h4>Email</h4><p>smk.pancasila.manonjaya@gmail.com</p></div></div>
+                    <div class="contact-info-item"><div class="contact-icon"><i class="fas fa-clock"></i></div><div><h4>Jam Operasional</h4><p>Senin - Jumat: 07.00 - 16.00 WIB<br>Sabtu: 07.00 - 13.00 WIB</p></div></div>
                 </div>
                 <div class="map-embed">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d485.5471252262898!2d108.30108094123086!3d-7.352143668083846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f574c88eedca3%3A0xe6e27b3643d8bacc!2sPancasila%20High%20School!5e0!3m2!1sen!2sus!4v1780800705570!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">"
-                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                        title="Lokasi SMK Pancasila Manonjaya">
-                    </iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1180.1129725495857!2d108.30090756646109!3d-7.3522624889893935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f574c88eedca3%3A0xe6e27b3643d8bacc!2sPancasila%20High%20School!5e0!3m2!1sen!2sid!4v1780881466466!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="footer-inner">
-            <div>
-                <h4>SMK Pancasila Manonjaya</h4>
-                <p>Mencetak generasi terampil, berkarakter, dan siap bersaing di dunia industri.</p>
-            </div>
-            <div>
-                <h4>Link Cepat</h4>
-                <p><a href="#home">Beranda</a></p>
-                <p><a href="#tentang">Tentang Kami</a></p>
-                <p><a href="#jurusan">Jurusan</a></p>
-                <p><a href="#ppdb">PPDB Online</a></p>
-            </div>
-            <div>
-                <h4>Ikuti Kami</h4>
+            <div><h4>SMK Pancasila Manonjaya</h4><p>Mencetak generasi terampil, berkarakter, dan siap bersaing di dunia industri.</p></div>
+            <div><h4>Link Cepat</h4><p><a href="#home">Beranda</a></p><p><a href="#tentang">Tentang Kami</a></p><p><a href="#jurusan">Jurusan</a></p><p><a href="#ppdb">PPDB Online</a></p></div>
+            <div><h4>Ikuti Kami</h4>
                 <p><a href="https://www.facebook.com/smepaofficial/"><i class="fab fa-facebook"></i> Facebook</a></p>
                 <p><a href="https://www.instagram.com/smepa.update"><i class="fab fa-instagram"></i> Instagram</a></p>
                 <p><a href="https://www.youtube.com/@smkpancasilamanonjaya1378"><i class="fab fa-youtube"></i> YouTube</a></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 SMK Pancasila Manonjaya. Hak Cipta Dilindungi. | Website Resmi PPDB
-        </div>
+        <div class="footer-bottom">&copy; 2026 SMK Pancasila Manonjaya. Hak Cipta Dilindungi. | Website Resmi PPDB</div>
     </footer>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTopBtn" title="Kembali ke atas">
-        <i class="fas fa-chevron-up"></i>
-    </button>
+    <button class="scroll-top" id="scrollTopBtn" title="Kembali ke atas"><i class="fas fa-chevron-up"></i></button>
 
     <script>
+        // ========== NAVBAR & SCROLL ==========
         const navbar = document.getElementById('navbar');
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
@@ -408,12 +594,16 @@
         });
         scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // FORM
+        // ========== FORM VALIDATION & SUBMISSION (FORMSPREE) ==========
         const registrationForm = document.getElementById('registrationForm');
         const submitBtn = document.getElementById('submitBtn');
         const submitText = document.getElementById('submitText');
         const spinner = document.getElementById('spinner');
         const formMessage = document.getElementById('formMessage');
+
+        // GANTI DENGAN FORM ID DARI FORMSPREE ANDA
+        const FORMSPREE_FORM_ID = 'mbdeojgj';
+        const FORMSPREE_ENDPOINT = `https://formspree.io/f/mbdeojgj`;
 
         function showError(fid, eid) {
             const f = document.getElementById(fid), e = document.getElementById(eid);
@@ -441,7 +631,6 @@
                 el.addEventListener('change', () => clearError(id, 'error-'+id));
             }
         });
-
         document.querySelectorAll('input[name="jenis_kelamin"]').forEach(r => r.addEventListener('change', () => clearError(null, 'error-jk')));
 
         registrationForm.addEventListener('submit', async function(e) {
@@ -472,11 +661,11 @@
                 return;
             }
 
-            const accessKey = document.querySelector('input[name="access_key"]').value.trim();
-            if (accessKey === 'f1313ef4-be04-4afd-8f02-1933359eeb18' || accessKey === '') {
+            // Cek apakah Form ID sudah diganti
+            if (FORMSPREE_FORM_ID === 'mbdeojgj') {
                 formMessage.classList.add('error-msg-box');
                 formMessage.style.display = 'block';
-                formMessage.innerHTML = '⚠️ <strong>Access Key belum diganti!</strong><br><small>Ganti dengan Access Key dari <a href="https://web3forms.com/" target="_blank">web3forms.com</a>.</small>';
+                formMessage.innerHTML = '⚠️ <strong>Form ID belum dikonfigurasi!</strong><br><small>Ganti <code>MASUKKAN_FORM_ID_ANDA</code> dengan Form ID dari <a href="https://formspree.io" target="_blank">formspree.io</a>.</small>';
                 formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
                 return;
             }
@@ -485,20 +674,25 @@
             submitText.style.display = 'none';
             spinner.style.display = 'inline-block';
             formMessage.style.display = 'none';
+
             try {
                 const formData = new FormData(registrationForm);
-                const res = await fetch('https://api.web3forms.com/submit', { method:'POST', body:formData });
-                const result = await res.json();
-                if (result.success) {
+                const response = await fetch(FORMSPREE_ENDPOINT, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
                     formMessage.classList.add('success');
                     formMessage.style.display = 'block';
                     formMessage.textContent = '✅ Pendaftaran berhasil dikirim! Tim PPDB akan menghubungi Anda dalam 1×24 jam kerja.';
                     registrationForm.reset();
                     clearAllErrors();
                 } else {
+                    const result = await response.json();
                     formMessage.classList.add('error-msg-box');
                     formMessage.style.display = 'block';
-                    formMessage.textContent = '❌ Gagal: ' + (result.message || 'Terjadi kesalahan.');
+                    formMessage.textContent = '❌ Gagal: ' + (result.error || 'Terjadi kesalahan.');
                 }
             } catch (err) {
                 formMessage.classList.add('error-msg-box');
@@ -512,71 +706,35 @@
             }
         });
 
-        // SLIDESHOW
-            const track = document.getElementById('carouselTrack');
-            const slides = Array.from(track.children);
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const dotsContainer = document.getElementById('carouselDots');
-
-            let currentIndex = 0;
-
-            // Buat dot indikator
-            slides.forEach((_, i) => {
-                const dot = document.createElement('button');
-                dot.classList.add('carousel-dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
-            });
-            const dots = Array.from(dotsContainer.children);
-
-            function updateSlide(index) {
-                track.style.transform = `translateX(-${index * 100}%)`;
-                dots.forEach(d => d.classList.remove('active'));
-                dots[index].classList.add('active');
-                currentIndex = index;
-            }
-
-            function goToSlide(index) {
-                updateSlide(index);
-            }
-
-            function nextSlide() {
-                const newIndex = (currentIndex + 1) % slides.length;
-                updateSlide(newIndex);
-            }
-
-            function prevSlide() {
-                const newIndex = (currentIndex - 1 + slides.length) % slides.length;
-                updateSlide(newIndex);
-            }
-
-            nextBtn.addEventListener('click', nextSlide);
-            prevBtn.addEventListener('click', prevSlide);
-
-            // Auto slide setiap 5 detik
-            let autoSlide = setInterval(nextSlide, 5000);
-
-            // Hentikan auto slide saat hover
-            const carousel = document.getElementById('aboutCarousel');
-            carousel.addEventListener('mouseenter', () => clearInterval(autoSlide));
-            carousel.addEventListener('mouseleave', () => {
-                autoSlide = setInterval(nextSlide, 5000);
-            });
-
-            // Touch swipe support
-            let touchStartX = 0;
-            track.addEventListener('touchstart', e => {
-                touchStartX = e.touches[0].clientX;
-            });
-            track.addEventListener('touchend', e => {
-                const diff = touchStartX - e.changedTouches[0].clientX;
-                if (diff > 40) nextSlide();
-                else if (diff < -40) prevSlide();
-            });
-
-        })();
+        // ========== SLIDESHOW ==========
+        const slideshowImages = [
+            'depan2.jpeg',
+            'sekolah.jpeg'
+        ];
+        const imgElement = document.getElementById('slideshowImage');
+        const dotsContainer = document.getElementById('slideshowDots');
+        let currentSlide = 0;
+        imgElement.src = slideshowImages[0];
+        slideshowImages.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => { changeSlide(index); resetTimer(); });
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.slideshow-dots .dot');
+        function changeSlide(index) {
+            imgElement.style.opacity = '0';
+            setTimeout(() => { imgElement.src = slideshowImages[index]; imgElement.style.opacity = '1'; }, 200);
+            dots.forEach(d => d.classList.remove('active'));
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+        function nextSlide() { changeSlide((currentSlide + 1) % slideshowImages.length); }
+        let slideInterval = setInterval(nextSlide, 3000);
+        function resetTimer() { clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 3000); }
+        document.getElementById('slideshow').addEventListener('mouseenter', () => clearInterval(slideInterval));
+        document.getElementById('slideshow').addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 3000); });
     </script>
 </body>
 </html>
