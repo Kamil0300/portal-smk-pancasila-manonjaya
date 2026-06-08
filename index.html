@@ -485,14 +485,13 @@
                                 <span class="error-msg" id="error-email">Format email tidak valid</span>
                             </div>
                             <div class="form-group">
-                                <label for="jurusan">Jurusan Pilihan <span class="required">*</span></label>
-                                <select id="jurusan" name="jurusan" required>
-                                    <option value="">-- Pilih Jurusan --</option>
-                                    <option value="DKV">Desain Kominikasi Visual (DKV)</option>
-                                    <option value="BDP">Bisnis Daring dan Pemasaran (BDP)</option>
-                                    <option value="AKL">Akuntansi & Keuangan Lembaga (AKL)</option>
-                                </select>
-                                <span class="error-msg" id="error-jurusan">Pilih jurusan yang diminati</span>
+                                <label>Jurusan <span class="required">*</span></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="jurusan" value="AKL" required> Akuntansi & Lembaga Keuangan (AKL)</label>
+                                    <label><input type="radio" name="jurusan" value="BDP" required> Bisnis Daring & Pemasaran (BDP)</label>
+                                    <label><input type="radio" name="jurusan" value="DKV" required> Desain Komunikasi Visual (DKV)</label>
+                                </div>
+                                <span class="error-msg" id="error-jk">Pilih jenis kelamin</span>
                             </div>
                         </div>
 
@@ -637,7 +636,7 @@
             const ortu = val('nama_ortu');
             const hp = val('no_hp');
             const email = val('email');
-            const jurusan = document.getElementById('jurusan').value;
+            const jurusan = document.querySelector('input[name="jurusan"]:checked');
             const jk = document.querySelector('input[name="jenis_kelamin"]:checked');
 
             if (!nama) { showError('nama','error-nama'); err=true; }
