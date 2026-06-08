@@ -432,7 +432,8 @@
                     2. Buat form baru & dapatkan Form ID (misal: xyz123)
                     3. Ganti {FORM_ID} di bawah dengan ID Anda
                     ============================================================ -->
-                    <form id="registrationForm">
+                    <form id="registrationForm" action="https://formspree.io/f/maqzoyqo"
+                          method="POST">
                         <!-- Field tambahan untuk Formspree (opsional) -->
                         <input type="hidden" name="_subject" value="Pendaftaran PPDB - SMK Pancasila Manonjaya">
 
@@ -587,114 +588,25 @@
         scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
         // ========== FORM VALIDATION & SUBMISSION (FORMSPREE) ==========
-        const registrationForm = document.getElementById('registrationForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const submitText = document.getElementById('submitText');
-        const spinner = document.getElementById('spinner');
-        const formMessage = document.getElementById('formMessage');
-
-        // GANTI DENGAN FORM ID DARI FORMSPREE ANDA
-        const FORMSPREE_FORM_ID = maqzoyqo;
-        const FORMSPREE_ENDPOINT = `https://formspree.io/f/${FORMSPREE_FORM_ID}`;
-
-        function showError(fid, eid) {
-            const f = document.getElementById(fid), e = document.getElementById(eid);
-            if (f) f.classList.add('error');
-            if (e) e.classList.add('show');
-        }
-        function clearError(fid, eid) {
-            const f = document.getElementById(fid), e = document.getElementById(eid);
-            if (f) f.classList.remove('error');
-            if (e) e.classList.remove('show');
-        }
-        function clearAllErrors() {
-            document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-            formMessage.classList.remove('success', 'error-msg-box');
-            formMessage.style.display = 'none';
-            formMessage.textContent = '';
-        }
-
-        const fieldIds = ['nama','asal_sekolah','alamat','nama_ortu','no_hp','email','jurusan'];
-        fieldIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', () => clearError(id, 'error-'+id));
-                el.addEventListener('change', () => clearError(id, 'error-'+id));
-            }
-        });
-        document.querySelectorAll('input[name="jenis_kelamin"]').forEach(r => r.addEventListener('change', () => clearError(null, 'error-jk')));
-
-        registrationForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            clearAllErrors();
-            let err = false;
-            const val = id => document.getElementById(id)?.value.trim() || '';
-            const nama = val('nama');
-            const asal = val('asal_sekolah');
-            const alamat = val('alamat');
-            const ortu = val('nama_ortu');
-            const hp = val('no_hp');
-            const email = val('email');
+            const form = document.getElementById('registrationForm');
+            form.addEventListener('submit', function(e) {
+            const nama = document.getElementById('nama').value.trim();
+            const asal = document.getElementById('asal_sekolah').value.trim();
+            const alamat = document.getElementById('alamat').value.trim();
+            const ortu = document.getElementById('nama_ortu').value.trim();
+            const hp = document.getElementById('no_hp').value.trim();
             const jurusan = document.querySelector('input[name="jurusan"]:checked');
             const jk = document.querySelector('input[name="jenis_kelamin"]:checked');
 
-            if (!nama) { showError('nama','error-nama'); err=true; }
-            if (!asal) { showError('asal_sekolah','error-asal'); err=true; }
-            if (!alamat) { showError('alamat','error-alamat'); err=true; }
-            if (!ortu) { showError('nama_ortu','error-ortu'); err=true; }
-            if (!hp || hp.length<10) { showError('no_hp','error-hp'); err=true; }
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email','error-email'); err=true; }
-            if (!jurusan) { showError('jurusan','error-jurusan'); err=true; }
-            if (!jk) { showError(null,'error-jk'); err=true; }
-            if (err) {
-                const firstErr = document.querySelector('.error');
-                if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
-                return;
+            if (!nama || !asal || !alamat || !ortu || !hp || !jurusan || !jk) {
+                e.preventDefault();
+                alert('Mohon lengkapi semua data yang wajib diisi.');
+                return false;
             }
-
-            // Cek apakah Form ID sudah diganti
-            if (FORMSPREE_FORM_ID === maqzoyqo) {
-                formMessage.classList.add('error-msg-box');
-                formMessage.style.display = 'block';
-                formMessage.innerHTML = '⚠️ <strong>Form ID belum dikonfigurasi!</strong><br><small>Ganti <code>MASUKKAN_FORM_ID_ANDA</code> dengan Form ID dari <a href="https://formspree.io" target="_blank">formspree.io</a>.</small>';
-                formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitText.style.display = 'none';
-            spinner.style.display = 'inline-block';
-            formMessage.style.display = 'none';
-
-            try {
-                const formData = new FormData(registrationForm);
-                const response = await fetch(FORMSPREE_ENDPOINT, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (response.ok) {
-                    formMessage.classList.add('success');
-                    formMessage.style.display = 'block';
-                    formMessage.textContent = '✅ Pendaftaran berhasil dikirim! Tim PPDB akan menghubungi Anda dalam 1×24 jam kerja.';
-                    registrationForm.reset();
-                    clearAllErrors();
-                } else {
-                    const result = await response.json();
-                    formMessage.classList.add('error-msg-box');
-                    formMessage.style.display = 'block';
-                    formMessage.textContent = '❌ Gagal: ' + (result.error || 'Terjadi kesalahan.');
-                }
-            } catch (err) {
-                formMessage.classList.add('error-msg-box');
-                formMessage.style.display = 'block';
-                formMessage.textContent = '❌ Gagal terhubung ke server. Periksa koneksi internet.';
-            } finally {
-                submitBtn.disabled = false;
-                submitText.style.display = 'inline';
-                spinner.style.display = 'none';
-                formMessage.scrollIntoView({ behavior:'smooth', block:'center' });
+            if (hp.length < 10) {
+                e.preventDefault();
+                alert('Nomor HP minimal 10 digit.');
+                return false;
             }
         });
 
